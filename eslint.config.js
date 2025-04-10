@@ -1,8 +1,11 @@
+import js from "@eslint/js";
 import airbnbBase from "eslint-config-airbnb-base";
 import configPrettier from "eslint-config-prettier";
 import pluginImport from "eslint-plugin-import";
 import pluginPrettier from "eslint-plugin-prettier";
 import pluginReact from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
 import pluginSecurity from "eslint-plugin-security";
 import globals from "globals";
 
@@ -140,22 +143,20 @@ export default [
     files: ["**/*.{jsx,tsx}"],
     ignores: ["node_modules/**", "dist/**"],
     languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.jest
-      },
       ecmaVersion: 2022,
-      sourceType: "module",
+      globals: globals.browser,
       parserOptions: {
-        ecmaFeatures: {
-          jsx: true
-        }
+        ecmaVersion: "latest",
+        ecmaFeatures: { jsx: true },
+        sourceType: "module"
       }
     },
     plugins: {
       react: pluginReact,
       prettier: pluginPrettier,
-      import: pluginImport
+      import: pluginImport,
+      "react-hooks": reactHooks,
+      "react-refresh": reactRefresh
     },
     rules: {
       // Base Rules
@@ -164,12 +165,12 @@ export default [
       // Import Rules
       ...importRules,
 
-      // React/JSX specific rules
+      // React specific rules
+      ...js.configs.recommended.rules,
+      ...reactHooks.configs.recommended.rules,
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "react/jsx-uses-react": "error",
-      "react/jsx-uses-vars": "error",
-      "react/react-in-jsx-scope": "error",
-      "react/jsx-filename-extension": ["error", { extensions: [".jsx", ".tsx"] }],
-      "react/prop-types": "error"
+      "react/jsx-uses-vars": "error"
     }
   }
 ];
